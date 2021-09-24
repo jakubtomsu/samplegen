@@ -13,6 +13,7 @@
 
 
 import samplegen as spg
+import math
 import pygame
 
 
@@ -20,8 +21,8 @@ import pygame
 def samplepoint2_draw(screen, s, pos, scale, wsize):
 	pygame.draw.circle(
 		screen,
-		(190, 200, int(100 * s[1])), spg.vec2_int(spg.vec2_add(spg.vec2_mul_f(s[0], scale), spg.vec2_mul(pos, wsize))),
-		s[1] * scale * 0.01)
+		(190, 200, min(max(int(100 * s[1]), 0), 255)), spg.vec2_int(spg.vec2_add(spg.vec2_mul_f(s[0], scale), spg.vec2_mul(pos, wsize))),
+		s[1] * scale * 0.02)
 
 def samplepoint2_arr_draw(samples):
 	background_colour = (15, 15, 20)
@@ -53,7 +54,7 @@ def samplepoint2_arr_draw(samples):
 				running = False
 
 def main():
-	testsamples = spg.samplepattern_rand_inside_sphere_power(1000, 0.1)
+	testsamples = spg.samplepattern_spiral(128, 0.5, 0.996)
 	samplepoint2_arr_draw(testsamples)
 
 

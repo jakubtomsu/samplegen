@@ -12,7 +12,11 @@
 import random
 import math
 
+# constants
+
+GOLDEN_RATIO = 1.61803398875
 VERSION = 0.1
+
 
 # config
 
@@ -25,7 +29,7 @@ SAMPLEPOINT2_TYPE_NAME = "samplepoint2"
 SAMPLEPOINT3_TYPE_NAME = "samplepoint3"
 # wrapper macro if you need to include the files as string from c++
 WRAPPER_MACRO_START =	"RDR_SHADER_TO_STRING(\n"
-WRAPPER_MACRO_END =		"\n);"
+WRAPPER_MACRO_END =		"\n)"
 
 TYPES_GLSL = WRAPPER_MACRO_START + """struct samplepoint2 {
 	vec2 point;
@@ -103,18 +107,32 @@ def samplepattern_rand_inside_sphere_power(count, power):
 	samples = []
 	i = 0
 	while(i < count):
-		i = i + 1
 		pos = vec2_mul_f(vec2_normalize(vec2_rand(1.0)), math.pow(f_rand_range(0.0, 1.0), power))
 		samples.append((pos, f_rand_range(1.0, 2.0)))
+		i = i + 1
 	return samples
+
+def samplepattern_spiral(count, power, step):
+	samples = []
+	i = 0
+	while(i < count):
+		pos = (math.cos(float(i) * step), math.sin(float(i) * step))
+		val = pow(float(i) / float(count), power)
+		samples.append((vec2_mul_f(pos, val), float(count - i) / float(count)))
+		i = i + 1
+	return samples
+
 
 # main
 
 def main():
+	# write struct
 	internal_fwrite("samplepoint", TYPES_GLSL) 
 
-	randsphere2 = samplepattern_rand_inside_sphere_power(256, 1.2)
-	internal_samplepoint2_fwrite("randsphere2", randsphere2)
+	rand_disc_samples = samplepattern_rand_inside_sphere_power(256, 1.2)
+	spiral_samples = samplepattern_spiral(128, 0.5, 0.996)
+	internal_samplepoint2_fwrite("rand_disc_samples", rand_disc_samples)
+	internal_samplepoint2_fwrite("spiral_samples", spiral_samples)
 
 
 

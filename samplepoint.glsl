@@ -8,4 +8,4 @@ struct samplepoint3 {
 	vec3 point;
 	float value;
 }; 
-);
+)
